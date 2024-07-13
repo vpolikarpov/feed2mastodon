@@ -68,8 +68,13 @@ def main():
         raise e
     
     # Fetch feed
-    logger.debug("Fetching feed")
-    feed = feedparser.parse(args.feed_url)["entries"]
+    logger.debug("Fetching feed from: " + args.feed_url)
+    response = requests.get(args.feed_url)
+    if response.status_code != 200:
+        logger.error("Failed to fetch feed: " + str(response.status_code))
+        return 1
+    feed = feedparser.parse(response.content)["entries"]
+    logger.debug("Posts in feed: " + str(len(feed)))
 
     # Filter posts by date
     now = time.gmtime()
