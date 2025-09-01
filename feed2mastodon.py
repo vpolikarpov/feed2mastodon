@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--post-max-length", help="Maximum length of the post", type=int, default=499)
     parser.add_argument("--post-max-images", help="Maximum number of images to attach to the post", type=int, default=4)
     parser.add_argument("--post-visibility", help="Visibility of the post in Mastodon", default="public", choices=["public", "unlisted", "private", "direct"])
+    parser.add_argument("--post-language", help="Post language", default="en")
     parser.add_argument("--mastodon-api-base-url", help="Mastodon API base URL", default=os.environ.get('MASTODON_API_BASE_URL', 'https://mastodon.social'))
     parser.add_argument("--dry-run", help="do not push to Mastodon", action="store_true")
     parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
@@ -139,7 +140,7 @@ def post_to_mastodon(post, args):
             status=status,
             visibility=args.post_visibility,
             media_ids=media_ids,
-            language="ru"
+            language=args.post_language
         )
         logger.debug("Posted to Mastodon: id={0}, url={1}".format(status['id'], status['url']))
 
