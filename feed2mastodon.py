@@ -159,12 +159,14 @@ def upload_image_to_mastodon(image_url, mastodon):
 
 def compose_status(post, template, max_length, hashtags):
     title = cleanup_text(post["title"])
-    summary = cleanup_html(post["summary"])
-    content = "\n\n".join([cleanup_html(c["value"]) for c in post["content"] if c["type"] == "text/html"])
+    summary = cleanup_html(post.get("summary", ""))
+    description = cleanup_html(post.get("description", ""))
+    content = "\n\n".join([cleanup_html(c["value"]) for c in post["content"] if c["type"] == "text/html"]) if "content" in post else ""
     link = post["link"]
     
-    text = template.format(title=title, summary=summary, content=content, link=link)
+    text = template.format(title=title, summary=summary, description=description, content=content, link=link)
     text = text[:max_length - len(hashtags) - 2]
+    logger.debug("Status text: {0}".format(text))
     return text + "\n\n" + hashtags
 
 def cleanup_text(text):
